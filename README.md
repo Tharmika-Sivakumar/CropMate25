@@ -39,7 +39,7 @@ To run this application properly, **Android 14** or later is required.
 4. **Push to Origin**
     - Click **Push origin** to upload your changes to GitHub.
     - Wait until the push ***origin tab is disappear*** This ensure your code is uploaded to GitHub
-    - Also keep eye on the **Fetch Origin** Which is appear under the menu bar. When it shows **Last fetched just now or Last fetched xx minutes ** then your all modification is sent to the github successfully.
+    - Also keep eye on the **Fetch Origin** Which is appear under the menu bar. When it shows **Last fetched just now or Last fetched xx minutes** then your all modification is sent to the github successfully.
 
 ## How to Pull Code from GitHub
 

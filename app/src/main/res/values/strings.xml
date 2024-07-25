@@ -1,0 +1,9 @@
+<resources>
+    <string name="CropMate">CropMate25</string>
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="search">Search</string>
+    <string name="weather_app">WEATHER </string>
+    <string name="enter_city">Enter City</string>
+    <string name="News">News</string>
+    <string name="general">GENERAL</string>
+</resources>

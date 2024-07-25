@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/light_green"
+    tools:context=".ProfileActivity">
+
+    <ImageView
+        android:id="@+id/top_view"
+        android:layout_width="0dp"
+        android:layout_height="120dp"
+        android:background="@drawable/bg_view"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:contentDescription="Nav"
+        tools:ignore="HardcodedText"/>
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="246dp"
+        android:layout_height="49dp"
+        android:background="@drawable/background_white"
+        android:text="Welcome"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="35sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/top_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/top_view"
+        tools:ignore="HardcodedText,RtlCompat" />
+
+<LinearLayout
+    android:id="@+id/locationlayout1"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    app:layout_constraintTop_toBottomOf="@+id/top_view"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    android:background="@drawable/green_border"
+    android:layout_marginTop="24dp">
+
+    <ImageView
+        android:id="@+id/imageViewname"
+        android:layout_width="37dp"
+        android:layout_height="37dp"
+        app:srcCompat="@drawable/profile1"
+        android:contentDescription="Weather Icon" />
+
+
+    <TextView
+        android:id="@+id/text_user_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="Name: "
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_weight="1"
+        tools:ignore="HardcodedText,RtlCompat" />
+</LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/locationLayout2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/locationlayout1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="24dp">
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="37dp"
+            android:layout_height="37dp"
+            app:srcCompat="@drawable/location"
+            android:contentDescription="Location Icon" />
+
+    <TextView
+        android:id="@+id/text_location"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="Location: "
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_weight="1"
+        tools:ignore="HardcodedText,RtlCompat" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/locationLayout3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/locationLayout2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="24dp">
+
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_width="37dp"
+            android:layout_height="37dp"
+            app:srcCompat="@drawable/card4"
+            android:contentDescription="Weather Icon" />
+
+    <TextView
+        android:id="@+id/text_weather"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="Weather: "
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_weight="1"
+        tools:ignore="HardcodedText,RtlCompat" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

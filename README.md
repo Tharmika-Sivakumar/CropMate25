@@ -12,6 +12,8 @@ To run this application properly, **Android 14** or later is required.
 2. **Extract the ZIP File**
     - Use your operating system's default ZIP extractor to extract the downloaded ZIP file.
 
+> ***Please Do not change the Folder path after opening the Application on the Android Studio, Because It will create a problem, while  working with GitHub So, Better save the extracted folder in the permanent place and Do rest of the work***
+
 3. **Open the Extracted Folder Using Android Studio**
     - Android Studio will handle the rest of the setup, so no additional configuration is needed.
 
@@ -20,6 +22,8 @@ To run this application properly, **Android 14** or later is required.
 
 5. **Run the Application**
     - Click the **green play button** to run the application on your emulator or connected Android device.
+
+
 
 ## How to Push Code to GitHub
 
@@ -34,6 +38,8 @@ To run this application properly, **Android 14** or later is required.
 
 4. **Push to Origin**
     - Click **Push origin** to upload your changes to GitHub.
+    - Wait until the push ***origin tab is disappear*** This ensure your code is uploaded to GitHub
+    - Also keep eye on the **Fetch Orgin** Which is appear under the menu bar. 
 
 ## How to Pull Code from GitHub
 
@@ -43,4 +49,4 @@ When a contributor informs you of modifications, follow these steps:
 
 2. **Pull Changes**
     - Navigate to **Repository > Pull** in the menu bar.
-    - This action updates your local project folder with the contributor's modifications, ensuring that both project folders are synchronized.
+    - This action updates your local project folder with the contributor's modifications, ensuring that both project folders are same.

@@ -19,10 +19,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 
 public class HomeFragment extends AppCompatActivity implements View.OnClickListener {
-    private String userId;
     private String weatherInfo;
-    private String city;
-    private String county;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,10 +37,7 @@ public class HomeFragment extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.news_card).setOnClickListener(this);
 
         Intent intent = getIntent();
-        county = intent.getStringExtra("county");
-        city = intent.getStringExtra("city");
         weatherInfo = intent.getStringExtra("weatherInfo");
-        userId = intent.getStringExtra("userID");
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -58,13 +52,7 @@ public class HomeFragment extends AppCompatActivity implements View.OnClickListe
 
         if (view.getId() == R.id.imageView3) {
             intent = new Intent(this, ProfileActivity.class);
-            intent.putExtra("userID", userId);
             intent.putExtra("weatherInfo", weatherInfo);
-            intent.putExtra("city", city);
-            intent.putExtra("country", county);  // need to check
-
-            Log.d("TAG", "Country: " + county);
-
             startActivity(intent);
         }else if (view.getId() == R.id.marketplace_card) {
             intent = new Intent(this, MarketPlaceFragment.class);

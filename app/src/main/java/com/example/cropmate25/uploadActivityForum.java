@@ -112,6 +112,7 @@ public class uploadActivityForum extends AppCompatActivity {
                             dialog.dismiss();
                             Toast.makeText(uploadActivityForum.this, "Failed to get URL", Toast.LENGTH_SHORT).show();
                         }
+
                     }
                 });
             }
@@ -147,6 +148,7 @@ public class uploadActivityForum extends AppCompatActivity {
                         } else {
                             Toast.makeText(uploadActivityForum.this, "Failed to save data", Toast.LENGTH_SHORT).show();
                         }
+
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override

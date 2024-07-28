@@ -20,6 +20,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -34,10 +36,10 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity implements LocationListener {
 
+    private static final Log log = LogFactory.getLog(MainActivity.class);
     private Button buttonLocation;
-    private TextView textViewLocation;
     private LocationManager locationManager;
-    private String userId; // Define userId
+
 
     private final String API_KEY = "24991040bc1c17696cc24c8b99268672";  // Replace with your OpenWeatherMap API key
 
@@ -46,11 +48,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        textViewLocation = findViewById(R.id.text_location);
         buttonLocation = findViewById(R.id.button_location);
-
-        Intent intent = getIntent();
-        userId = intent.getStringExtra("userID"); // Assign userId
 
         // Request location permissions if not granted
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -96,17 +94,21 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
             if (addresses != null && addresses.size() > 0) {
                 Address address = addresses.get(0);
-                String county = address.getSubAdminArea();
-                String city = address.getLocality();
 
-                fetchWeather(latitude, longitude, county, city);
+                String district = address.getSubAdminArea();
+                String county = address.getCountryName();
+                String city = address.getLocality();
+                String province = address.getAdminArea();
+                UserData.setLocation(county, province, district, city);
+
+                fetchWeather(latitude, longitude);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void fetchWeather(double latitude, double longitude, String county, String city) {
+    private void fetchWeather(double latitude, double longitude) {
         OkHttpClient client = new OkHttpClient();
         String url = "https://api.openweathermap.org/data/2.5/weather?lat=" + latitude + "&lon=" + longitude + "&appid=" + API_KEY + "&units=metric";
 
@@ -133,16 +135,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                                 JSONObject main = json.getJSONObject("main");
                                 double temp = main.getDouble("temp");
                                 String weatherCondition = json.getJSONArray("weather").getJSONObject(0).getString("description");
-
                                 String weatherInfo = temp + "°C, " + weatherCondition;
 
-                                // Redirect to another Activity if HomeFragment is not correct
                                 Intent intent = new Intent(MainActivity.this, HomeFragment.class); // Change to an Activity
-                                intent.putExtra("county", county);
-                                intent.putExtra("city", city);
                                 intent.putExtra("weatherInfo", weatherInfo);
-                                intent.putExtra("userID", userId);
                                 startActivity(intent);
+                                finish();
 
                             } catch (Exception e) {
                                 e.printStackTrace();

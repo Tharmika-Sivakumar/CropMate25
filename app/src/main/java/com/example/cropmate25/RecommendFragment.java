@@ -24,6 +24,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -34,26 +35,20 @@ import java.util.Locale;
 import java.util.Map;
 
 public class RecommendFragment extends AppCompatActivity {
-
+    private static final String TAG = "RecommendFragment";
     private TextView textViewLocation;
     private TextView textViewCrops;
     private TextView textViewSoil;
     private TextView textViewWeather;
     private TextView textViewAsso;
 
-    private FusedLocationProviderClient fusedLocationProviderClient;
-    private static final int LOCATION_REQUEST_CODE = 10001;
-
-    private String district;
-    private String country;
     private String crops;
     private String soil_condition;
     private String weather_condition;
     private String nearestAssociation_name;
     private String nearestAssociation_address;
     private String nearestAssociation_phone;
-
-    private FirebaseFirestore firestore;
+    private FirebaseFirestore database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,97 +61,27 @@ public class RecommendFragment extends AppCompatActivity {
         textViewWeather = findViewById(R.id.textViewWeather);
         textViewAsso = findViewById(R.id.textViewAssociation);
 
+        String district = UserData.getDistrict();
+
+        //showProgressDialog();
+        FirebaseManager firebaseManager = FirebaseManager.getInstance(TAG);
+        database = firebaseManager.getDatabase();
+        //hideProgressDialog();
+
         Button buttonFetchRecommendations = findViewById(R.id.buttonFetchRecommendations);
         Button buttonViewOtherRecommendations = findViewById(R.id.buttonviewother);
 
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-
-        buttonFetchRecommendations.setOnClickListener(view -> getLocation());
+        buttonFetchRecommendations.setOnClickListener(view -> fetchRecommendations(district));
         buttonViewOtherRecommendations.setOnClickListener(view ->{
             Intent intent = new Intent(this, recommend_search.class);
             startActivity(intent);
         });
-        initializeFirebase();
-    }
-
-    private void initializeFirebase() {
-        try { // Check the FirebaseApp with the name "secondary" already there or not, because of the error we faced
-            FirebaseApp secondaryApp;
-            try { // check it is there ot not
-                secondaryApp = FirebaseApp.getInstance("secondary");
-                Log.e(TAG, "FirebaseApp 'secondary' already exists");
-            }
-            catch (IllegalStateException e) { // if not initialized
-                FirebaseOptions options = new FirebaseOptions.Builder()
-                        .setProjectId("shoppingcart-e3525")
-                        .setApplicationId("1:669624840785:android:70295f617f188094577e70")
-                        .setApiKey("AIzaSyDUSi3BMEa8KlYD1BXTvzBEgqctU8SEH2o")
-                        .build();
-                secondaryApp = FirebaseApp.initializeApp(this, options, "secondary");
-                Log.e(TAG, "FirebaseApp 'secondary' initialized" + e.getMessage());
-            }
-            firestore = FirebaseFirestore.getInstance(secondaryApp);
-            Toast.makeText(this, "Firebase initialized Successfully", Toast.LENGTH_SHORT).show();
-        }
-        catch (Exception e) {
-            Log.e(TAG, "Firebase initialization error: " + e.getMessage());
-            Toast.makeText(this, "Firebase initialization failed", Toast.LENGTH_SHORT).show();
-        }
-
-    }
-
-    private void getLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_REQUEST_CODE);
-            return;
-        }
-
-        fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
-            @Override
-            public void onComplete(@NonNull Task<Location> task) {
-                if (task.isSuccessful() && task.getResult() != null) {
-                    Location location = task.getResult();
-                    double latitude = location.getLatitude();
-                    double longitude = location.getLongitude();
-                    getAddressFromLocation(latitude, longitude);
-                } else {
-                    Toast.makeText(RecommendFragment.this, "Failed to get location", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
-
-    private void getAddressFromLocation(double latitude, double longitude) {
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-        try {
-            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-            if (addresses != null && !addresses.isEmpty()) {
-                Address address = addresses.get(0);
-                district = address.getSubAdminArea();
-                country = address.getCountryName();
-                String addressText = address.getAddressLine(0);
-                textViewLocation.setText("Location: " + addressText);
-                if (district != null) {
-                    textViewLocation.append("\nDistrict: " + district);
-                    fetchRecommendations(district);
-                }
-                if (country != null) {
-                    textViewLocation.append("\nCountry: " + country);
-                }
-            } else {
-                textViewLocation.setText("Location: Unable to get address");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            textViewLocation.setText("Location: Unable to get address");
-        }
     }
 
     private void fetchRecommendations(String district) {
         try {
             String finalDistrict = district.substring(0, 1).toUpperCase() + district.substring(1).toLowerCase() + " District";
-            DocumentReference docRef = firestore.collection("Recommendation").document(finalDistrict);
+            DocumentReference docRef = database.collection("Recommendation").document(finalDistrict);
             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -176,6 +101,9 @@ public class RecommendFragment extends AppCompatActivity {
                             }
 
                             // text view for printing data
+                            textViewLocation.setText("Location: ");
+                            textViewLocation.append("\nCity: " + UserData.getCity());
+                            textViewLocation.append("\nDistrict: " + district);
                             textViewCrops.setText(String.format("Recommended Crops: %s", crops));
                             textViewSoil.setText(String.format("Soil Condition: %s", soil_condition));
                             textViewWeather.setText(String.format("Weather Condition: %s", weather_condition));
@@ -193,6 +121,7 @@ public class RecommendFragment extends AppCompatActivity {
                         Log.e(TAG, "Failed to fetch document: " + task.getException());
                         Toast.makeText(RecommendFragment.this, "Failed to fetch document", Toast.LENGTH_SHORT).show();
                     }
+
                 }
             });
         } catch (Exception e) {
@@ -200,13 +129,5 @@ public class RecommendFragment extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == LOCATION_REQUEST_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            getLocation();
-        } else {
-            Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show();
- }
-}
+
 }

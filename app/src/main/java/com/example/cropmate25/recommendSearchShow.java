@@ -124,6 +124,7 @@ public class recommendSearchShow extends AppCompatActivity {
                         Log.e(TAG, "Failed to fetch document: " + task.getException());
                         Toast.makeText(recommendSearchShow.this, "Failed to fetch document", Toast.LENGTH_SHORT).show();
                     }
+
                 }
             });
         }

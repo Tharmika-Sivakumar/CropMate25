@@ -113,6 +113,7 @@ public class UploadActivity extends AppCompatActivity {
                             dialog.dismiss();
                             Toast.makeText(UploadActivity.this, "Failed to get URL", Toast.LENGTH_SHORT).show();
                         }
+
                     }
                 });
             }
@@ -149,6 +150,7 @@ public class UploadActivity extends AppCompatActivity {
                         } else {
                             Toast.makeText(UploadActivity.this, "Failed to save data", Toast.LENGTH_SHORT).show();
                         }
+
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override

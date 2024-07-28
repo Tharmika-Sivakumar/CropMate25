@@ -2,9 +2,11 @@ package com.example.cropmate25;
 
 import static android.content.ContentValues.TAG;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,12 +33,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SignupActivity extends AppCompatActivity {
-
+    private static final String TAG = "SignupActivity";
     private FirebaseAuth auth;
-    private FirebaseFirestore firestore;  // need to transfer
     private EditText signupName, signupEmail, signupPassword;
     private Button signupBtn;
     private TextView LoginRedirectText;
+    private AlertDialog progressDialog;
+    private FirebaseFirestore database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,30 +47,11 @@ public class SignupActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_signup);
 
+        showProgressDialog();
         auth = FirebaseAuth.getInstance();
-
-        try { // Check the FirebaseApp with the name "secondary" already there or not, because of the error we faced
-            FirebaseApp secondaryApp;
-            try { // check it is there ot not
-                secondaryApp = FirebaseApp.getInstance("secondary");
-                Log.e(TAG, "FirebaseApp 'secondary' already exists");
-            }
-            catch (IllegalStateException e) { // if not initialized
-                FirebaseOptions options = new FirebaseOptions.Builder()
-                        .setProjectId("shoppingcart-e3525")
-                        .setApplicationId("1:669624840785:android:70295f617f188094577e70")
-                        .setApiKey("AIzaSyDUSi3BMEa8KlYD1BXTvzBEgqctU8SEH2o")
-                        .build();
-                secondaryApp = FirebaseApp.initializeApp(this, options, "secondary");
-                Log.e(TAG, "FirebaseApp 'secondary' initialized" + e.getMessage());
-            }
-            firestore = FirebaseFirestore.getInstance(secondaryApp);
-            Toast.makeText(this, "Firebase initialized Successfully", Toast.LENGTH_SHORT).show();
-        }
-        catch (Exception e) {
-            Log.e(TAG, "Firebase initialization error: " + e.getMessage());
-            Toast.makeText(this, "Firebase initialization failed", Toast.LENGTH_SHORT).show();
-        }
+        FirebaseManager firebaseManager = FirebaseManager.getInstance(TAG);
+        database = firebaseManager.getDatabase();
+        hideProgressDialog();
 
         signupName = findViewById(R.id.signup_name);
         signupEmail = findViewById(R.id.signup_email);
@@ -91,28 +75,31 @@ public class SignupActivity extends AppCompatActivity {
                     return;
                 }
 
+                showProgressDialog();
+
                 auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
+                        hideProgressDialog();
                         if (task.isSuccessful()) {
                             FirebaseUser currentUser = auth.getCurrentUser();
                             if (currentUser != null) {
                                 String userId = currentUser.getUid();
+                                UserData.setId(userId);
+                                UserData.setName(name);
 
                                 Map<String, Object> data = new HashMap<>();
                                 data.put("Name", name);
-                                data.put("Email",email);
+                                data.put("Email", email);
 
-                                // Store user data in Fire store
-                                firestore.collection("User").document(userId)
+                                database.collection("User").document(userId)
                                         .set(data)
                                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if (task.isSuccessful()) {
                                                     Toast.makeText(SignupActivity.this, "Data Stored Successfully", Toast.LENGTH_SHORT).show();
-                                                }
-                                                else {
+                                                } else {
                                                     Toast.makeText(SignupActivity.this, "Failed to store user data: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                                 }
                                             }
@@ -120,15 +107,12 @@ public class SignupActivity extends AppCompatActivity {
 
                                 Toast.makeText(SignupActivity.this, "Signup successful", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(SignupActivity.this, MainActivity.class);
-                                intent.putExtra("userID", userId);
                                 startActivity(intent);
                                 finish();
-                            }
-                            else {
+                            } else {
                                 Toast.makeText(SignupActivity.this, "Failed to get user ID", Toast.LENGTH_SHORT).show();
                             }
-                        }
-                        else {
+                        } else {
                             Toast.makeText(SignupActivity.this, "SignUp Failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -148,5 +132,24 @@ public class SignupActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+    }
+
+    private void showProgressDialog() {
+        if (progressDialog == null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setCancelable(false);
+
+            LayoutInflater inflater = getLayoutInflater();
+            builder.setView(inflater.inflate(R.layout.progress_layout, null));
+
+            progressDialog = builder.create();
+        }
+        progressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
     }
 }

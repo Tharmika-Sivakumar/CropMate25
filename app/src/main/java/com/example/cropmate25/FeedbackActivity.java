@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -30,6 +31,7 @@ public class FeedbackActivity extends AppCompatActivity {
     private Button btnSend;
     private FirebaseFirestore database;
     private FirebaseManager firebaseManager;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,7 @@ public class FeedbackActivity extends AppCompatActivity {
 
         messageData = findViewById(R.id.messagedata);
         btnSend = findViewById(R.id.btn_send);
+        recyclerView = findViewById(R.id.RecyclerView);
 
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,6 +51,8 @@ public class FeedbackActivity extends AppCompatActivity {
                 sendData();
             }
         });
+
+
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());

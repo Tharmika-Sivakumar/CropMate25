@@ -48,7 +48,7 @@ public class FeedbackActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.RecyclerView);
 
         feedbackList = new ArrayList<>();
-        feedbackAdapter = new FeedbackAdapter(feedbackList);
+        feedbackAdapter = new FeedbackAdapter(this,feedbackList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(feedbackAdapter);
         fetchFeedbackData();
@@ -117,8 +117,6 @@ public class FeedbackActivity extends AppCompatActivity {
                     }
                 });
     }
-
-
 
     private void fetchFeedbackData() {
         database.collection("Feedback")

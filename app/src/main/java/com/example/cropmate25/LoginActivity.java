@@ -83,7 +83,7 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
 
-            showProgressDialog();  // Show the progress dialog while logging in
+            showProgressDialog();
 
             auth.signInWithEmailAndPassword(email, password)
                     .addOnSuccessListener(authResult -> {
@@ -100,7 +100,7 @@ public class LoginActivity extends AppCompatActivity {
                     .addOnFailureListener(e -> {
                         Toast.makeText(LoginActivity.this, "Login failed", Toast.LENGTH_SHORT).show();
                         Log.e(TAG, "Login failed", e);
-                        hideProgressDialog();  // Hide the progress dialog if login fails
+                        hideProgressDialog();
                     });
         });
 

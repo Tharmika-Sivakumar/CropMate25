@@ -87,7 +87,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     public void onLocationChanged(@NonNull Location location) {
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
-        Toast.makeText(this,"Location fetched Successfully" , Toast.LENGTH_SHORT).show();
 
         try {
             Geocoder geocoder = new Geocoder(MainActivity.this, Locale.getDefault());

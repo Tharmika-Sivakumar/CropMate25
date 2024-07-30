@@ -116,7 +116,6 @@ public class WeatherFragment extends AppCompatActivity {
             @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View v) {
-                Toast.makeText(WeatherFragment.this, "Button Clicked!", Toast.LENGTH_SHORT).show();
                 String city = cityName.getText().toString();
                 if (!city.isEmpty()) {
                     //noinspection SpellCheckingInspection

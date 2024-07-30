@@ -14,8 +14,6 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -26,18 +24,22 @@ import java.util.List;
 
 public class recommend_search extends AppCompatActivity {
 
-    private FirebaseFirestore firestore;
     private List<String> dataList;
     private ArrayAdapter<String> adapter;
     private String selectedValue;
+    private FirebaseFirestore database;
     private static final int delay = 1000; // 1s
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_recommend_search);
-        initializeFirebase();
+
+        FirebaseManager firebaseManager = FirebaseManager.getInstance(TAG);
+        database = firebaseManager.getDatabase();
+
         dataList = new ArrayList<>();
         fetchDataFromFirestore();
 
@@ -50,7 +52,6 @@ public class recommend_search extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                // Optionally handle query submission
                 return false;
             }
 
@@ -65,7 +66,6 @@ public class recommend_search extends AppCompatActivity {
 
         suggestionList.setOnItemClickListener((parent, view, position, id) -> {
             selectedValue = adapter.getItem(position);
-            Toast.makeText(recommend_search.this, "Selected: " + selectedValue, Toast.LENGTH_SHORT).show();
             Log.d(TAG, "Selected value: " + selectedValue);
             new Handler().postDelayed(() -> {
                 Intent intent = new Intent(recommend_search.this, recommendSearchShow.class);
@@ -75,31 +75,8 @@ public class recommend_search extends AppCompatActivity {
         });
     }
 
-    private void initializeFirebase() {
-        try {
-            FirebaseApp secondaryApp;
-            try {
-                secondaryApp = FirebaseApp.getInstance("secondary");
-                Log.d(TAG, "FirebaseApp 'secondary' already exists");
-            } catch (IllegalStateException e) {
-                FirebaseOptions options = new FirebaseOptions.Builder()
-                        .setProjectId("shoppingcart-e3525")
-                        .setApplicationId("1:669624840785:android:70295f617f188094577e70")
-                        .setApiKey("AIzaSyDUSi3BMEa8KlYD1BXTvzBEgqctU8SEH2o")
-                        .build();
-                secondaryApp = FirebaseApp.initializeApp(this, options, "secondary");
-                Log.d(TAG, "FirebaseApp 'secondary' initialized");
-            }
-            firestore = FirebaseFirestore.getInstance(secondaryApp);
-            Toast.makeText(this, "Firebase initialized Successfully", Toast.LENGTH_SHORT).show();
-        } catch (Exception e) {
-            Log.e(TAG, "Firebase initialization error: " + e.getMessage());
-            Toast.makeText(this, "Firebase initialization failed", Toast.LENGTH_SHORT).show();
-        }
-    }
-
     private void fetchDataFromFirestore() {
-        CollectionReference collectionRef = firestore.collection("Recommendation");
+        CollectionReference collectionRef = database.collection("Recommendation");
         collectionRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 dataList.clear();
@@ -107,17 +84,22 @@ public class recommend_search extends AppCompatActivity {
                     String name = document.getId();
                     if (name != null && !name.isEmpty()) {
                         dataList.add(name);
-                    } else {
+                    }
+                    else {
                         Log.e("fetchdataError", "This Document ID is Null or Empty: " + document.getId());
                     }
                 }
-                Collections.sort(dataList); // Sort the data list alphabetically
+                Collections.sort(dataList);
                 Log.d(TAG, "List is Sorted");
-                adapter.notifyDataSetChanged(); // Notify the adapter of the data change
+                adapter.notifyDataSetChanged();
                 Log.d(TAG, "Adapter notified");
-            } else {
-                Log.e("fetchdataError", "Cannot fetch the documents: " + task.getException().getMessage());
+            }
+            else {
+                Toast.makeText(recommend_search.this, "Can Not Fetch Data", Toast.LENGTH_SHORT).show();
+                Log.e("fetch data Error", "Cannot fetch the documents: " + task.getException().getMessage());
             }
         });
+
     }
+
 }

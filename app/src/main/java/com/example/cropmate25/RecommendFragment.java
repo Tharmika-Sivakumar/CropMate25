@@ -1,37 +1,24 @@
 package com.example.cropmate25;
 
-import static android.content.ContentValues.TAG;
-
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
+
 import android.os.Bundle;
 import android.util.Log;
+
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
-import com.google.firebase.auth.FirebaseAuth;
+
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 public class RecommendFragment extends AppCompatActivity {
@@ -63,10 +50,8 @@ public class RecommendFragment extends AppCompatActivity {
 
         String district = UserData.getDistrict();
 
-        //showProgressDialog();
         FirebaseManager firebaseManager = FirebaseManager.getInstance(TAG);
         database = firebaseManager.getDatabase();
-        //hideProgressDialog();
 
         Button buttonFetchRecommendations = findViewById(R.id.buttonFetchRecommendations);
         Button buttonViewOtherRecommendations = findViewById(R.id.buttonviewother);
@@ -100,7 +85,7 @@ public class RecommendFragment extends AppCompatActivity {
                                 nearestAssociation_phone = (String) nearestAssociation.get("phone");
                             }
 
-                            // text view for printing data
+
                             textViewLocation.setText("Location: ");
                             textViewLocation.append("\nCity: " + UserData.getCity());
                             textViewLocation.append("\nDistrict: " + district);
@@ -111,7 +96,6 @@ public class RecommendFragment extends AppCompatActivity {
                             textViewAsso.append(String.format("\nName: %s", nearestAssociation_name));
                             textViewAsso.append(String.format("\nAddress: %s", nearestAssociation_address));
                             textViewAsso.append(String.format("\nPhone: %s", nearestAssociation_phone));
-                            Toast.makeText(RecommendFragment.this, "Data Received", Toast.LENGTH_SHORT).show();
                         }
                         else {
                             Toast.makeText(RecommendFragment.this, "No document found", Toast.LENGTH_SHORT).show();
@@ -124,10 +108,12 @@ public class RecommendFragment extends AppCompatActivity {
 
                 }
             });
-        } catch (Exception e) {
+
+        }
+        catch (Exception e) {
             Log.e(TAG, "Error fetching recommendations: " + e.getMessage());
         }
-    }
 
+    }
 
 }

@@ -1,11 +1,11 @@
 package com.example.cropmate25;
 
-import static android.content.ContentValues.TAG;
 
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -22,8 +22,6 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -66,12 +64,21 @@ public class SignupActivity extends AppCompatActivity {
                 String email = signupEmail.getText().toString().trim();
                 String password = signupPassword.getText().toString().trim();
 
+                if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                    signupEmail.setError("Please enter a valid email address");
+                    return;
+                }
+                if (name.isEmpty()) {
+                    signupName.setError("Name cannot be empty");
+                    return;
+                }
+
                 if (email.isEmpty()) {
-                    signupEmail.setError("Email can not be empty");
+                    signupEmail.setError("Email cannot be empty");
                     return;
                 }
                 if (password.isEmpty()) {
-                    signupPassword.setError("Password can not be empty");
+                    signupPassword.setError("Password cannot be empty");
                     return;
                 }
 
@@ -98,22 +105,24 @@ public class SignupActivity extends AppCompatActivity {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if (task.isSuccessful()) {
-                                                    Toast.makeText(SignupActivity.this, "Data Stored Successfully", Toast.LENGTH_SHORT).show();
-                                                } else {
-                                                    Toast.makeText(SignupActivity.this, "Failed to store user data: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                                    Log.d(TAG, "User data stored successfully");
+                                                }
+                                                else {
+                                                    Log.e(TAG, "Failed to store user data", task.getException());
                                                 }
                                             }
                                         });
 
-                                Toast.makeText(SignupActivity.this, "Signup successful", Toast.LENGTH_SHORT).show();
+                                Log.d(TAG, "Signup successful");
                                 Intent intent = new Intent(SignupActivity.this, MainActivity.class);
                                 startActivity(intent);
                                 finish();
                             } else {
-                                Toast.makeText(SignupActivity.this, "Failed to get user ID", Toast.LENGTH_SHORT).show();
+                                Log.e(TAG, "Failed to get user ID");
                             }
                         } else {
-                            Toast.makeText(SignupActivity.this, "SignUp Failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignupActivity.this, "Signup failed", Toast.LENGTH_SHORT).show();
+                            Log.e(TAG, "Signup failed", task.getException());
                         }
                     }
                 });

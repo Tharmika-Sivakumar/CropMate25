@@ -20,7 +20,7 @@ public class DateTime{
     }
     public static String getTimeStamp() {
         Date now = new Date();
-        SimpleDateFormat formatter = new SimpleDateFormat("'Date:' yyyy-MM-dd '||' 'Time:' HH:mm:ss", Locale.getDefault());
+        SimpleDateFormat formatter = new SimpleDateFormat("'on' yyyy-MM-dd  'at' HH:mm:ss", Locale.getDefault());
         return formatter.format(now);
     }
 }

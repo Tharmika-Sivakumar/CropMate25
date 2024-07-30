@@ -9,20 +9,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class FeedbackActivity extends AppCompatActivity {
@@ -32,6 +32,8 @@ public class FeedbackActivity extends AppCompatActivity {
     private FirebaseFirestore database;
     private FirebaseManager firebaseManager;
     private RecyclerView recyclerView;
+    private FeedbackAdapter feedbackAdapter;
+    private List<Feedback> feedbackList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,14 +47,18 @@ public class FeedbackActivity extends AppCompatActivity {
         btnSend = findViewById(R.id.btn_send);
         recyclerView = findViewById(R.id.RecyclerView);
 
+        feedbackList = new ArrayList<>();
+        feedbackAdapter = new FeedbackAdapter(feedbackList);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(feedbackAdapter);
+        fetchFeedbackData();
+
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sendData();
             }
         });
-
-
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -69,38 +75,75 @@ public class FeedbackActivity extends AppCompatActivity {
             return;
         }
 
-        Map<String, Object> data = new HashMap<>();
-        data.put("Name", UserData.getName());
-        data.put("Living City", UserData.getCity());
-        data.put("Living District", UserData.getDistrict());
-        data.put("Living Province", UserData.getProvince());
-        data.put("When Submitted", DateTime.getTimeStamp());
-        data.put("Feedback", message);
 
-        database.collection("Feedback").document(UserData.getId())
-                .set(data)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(FeedbackActivity.this, "Thank You For your Feedback", Toast.LENGTH_SHORT).show();
-                            Log.d(TAG, "Data stored successfully");
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Intent intent = new Intent(FeedbackActivity.this, HomeFragment.class);
-                                    startActivity(intent);
-                                    finish();
-                                }
-                            }, 1000);
-                        }
-                        else {
-                            Toast.makeText(FeedbackActivity.this, "Failed to store Data", Toast.LENGTH_SHORT).show();
-                            Log.e(TAG, "Failed to store Data: " + task.getException().getMessage());
-                        }
+        Map<String, Object> userData = new HashMap<>();
+        userData.put("Name", UserData.getName());
+        userData.put("Living City", UserData.getCity());
+        userData.put("Living District", UserData.getDistrict());
+        userData.put("Living Province", UserData.getProvince());
+
+
+        Map<String, Object> feedbackData = new HashMap<>();
+        feedbackData.put("When Submitted", DateTime.getTimeStamp());
+        feedbackData.put("Feedback", message);
+
+
+        database.collection("Feedback")
+                .document(UserData.getId())
+                .set(userData)
+                .addOnCompleteListener(userDataTask -> {
+                    if (userDataTask.isSuccessful()) {
+                        database.collection("Feedback")
+                                .document(UserData.getId())
+                                .collection("UserFeedback")
+                                .add(feedbackData)
+                                .addOnCompleteListener(feedbackTask -> {
+                                    if (feedbackTask.isSuccessful()) {
+                                        Toast.makeText(FeedbackActivity.this, "Thank You For your Feedback", Toast.LENGTH_SHORT).show();
+                                        Log.d(TAG, "Data stored successfully");
+                                        new Handler().postDelayed(() -> {
+                                            Intent intent = new Intent(FeedbackActivity.this, HomeFragment.class);
+                                            startActivity(intent);
+                                            finish();
+                                        }, 1000);
+                                    } else {
+                                        Toast.makeText(FeedbackActivity.this, "Failed to store Feedback", Toast.LENGTH_SHORT).show();
+                                        Log.e(TAG, "Failed to store Feedback: " + feedbackTask.getException().getMessage());
+                                    }
+                                });
+                    } else {
+                        Toast.makeText(FeedbackActivity.this, "Failed to store User Data", Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "Failed to store User Data: " + userDataTask.getException().getMessage());
                     }
                 });
-
     }
+
+
+
+    private void fetchFeedbackData() {
+        database.collection("Feedback")
+                .document(UserData.getId())
+                .collection("UserFeedback")
+                .orderBy("When Submitted", Query.Direction.DESCENDING)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        feedbackList.clear();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            String feedback = document.getString("Feedback");
+                            String timestamp = document.getString("When Submitted");
+                            Feedback feedbackItem = new Feedback(timestamp, feedback);
+                            feedbackList.add(feedbackItem);
+                        }
+                        feedbackAdapter.notifyDataSetChanged();
+                    } else {
+                        Toast.makeText(FeedbackActivity.this, "Failed to fetch data", Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "Error getting documents: ", task.getException());
+                    }
+                });
+    }
+
+
+
 
 }

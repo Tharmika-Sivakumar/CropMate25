@@ -8,7 +8,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.List;
+
 public class FeedbackAdapter extends RecyclerView.Adapter<FeedbackAdapter.MyViewHolderFeedback> {
+    private List<Feedback> feedbackList;
+
+    public FeedbackAdapter(List<Feedback> feedbackList) {
+        this.feedbackList = feedbackList;
+    }
 
     @NonNull
     @Override
@@ -19,20 +26,22 @@ public class FeedbackAdapter extends RecyclerView.Adapter<FeedbackAdapter.MyView
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolderFeedback holder, int position) {
-        // Bind data to your ViewHolder here
+        Feedback feedback = feedbackList.get(position);
+        holder.feedback.setText(feedback.getFeedback());
+        holder.whenPost.setText("Posted: " + feedback.getTimeStamp());
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return feedbackList.size();
     }
 
     static class MyViewHolderFeedback extends RecyclerView.ViewHolder {
-        TextView feedback, whoPost;
+        TextView feedback, whenPost;
         public MyViewHolderFeedback(@NonNull View itemView) {
             super(itemView);
             feedback = itemView.findViewById(R.id.feedback_past);
-            whoPost = itemView.findViewById(R.id.whopost);
+            whenPost = itemView.findViewById(R.id.whenpost);
         }
     }
 }

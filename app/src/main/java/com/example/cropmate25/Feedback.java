@@ -15,9 +15,7 @@ public class Feedback {
         return timeStamp;
     }
 
-    public void setName(String timeStamp) {
-        this.timeStamp = timeStamp;
-    }
+
 
     public String getFeedback() {
         return feedback;

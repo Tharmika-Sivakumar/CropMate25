@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/background"
-    tools:context=".UpdateActivity">
+    tools:context=".UploadActivity">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -30,13 +30,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:text="Update Data"
+                android:text="Create Thread"
                 android:textAlignment="center"
                 android:textColor="@color/dark_green"
                 android:textSize="30sp" />
 
             <ImageView
-                android:id="@+id/updateImage"
+                android:id="@+id/uploadImage"
                 android:layout_width="70dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="130dp"
@@ -46,48 +46,46 @@
                 android:src="@drawable/uploadphoto" />
 
             <EditText
-                android:id="@+id/updateTitle"
+                android:id="@+id/uploadTitle"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/green_border"
                 android:gravity="start|center_vertical"
-                android:hint="Enter Title"
+                android:hint="Thread Title"
+                android:textColorHint="#131414"
+                android:textStyle="bold"
                 android:padding="16dp"
                 android:textColor="@color/dark_green" />
 
             <EditText
-                android:id="@+id/updateName"
+                android:id="@+id/messagedata"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/green_border"
-                android:gravity="start|center_vertical"
-                android:hint="Enter Name"
-                android:padding="16dp"
-                android:textColor="@color/dark_green" />
+                android:layout_height="194dp"
+                android:layout_margin="15dp"
+                android:padding="10dp"
+                android:gravity="start|top"
+                android:background="@drawable/white_box"
+                android:hint="Submit your question"
+                android:inputType="textMultiLine"
+                android:minHeight="48dp"
+                android:overScrollMode="always"
+                android:scrollbars="vertical"
+                android:textColorHint="#131414"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textAlignment="viewStart"
+            />
 
-
-            <EditText
-                android:id="@+id/updateDesc"
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/green_border"
-                android:gravity="start|center_vertical"
-                android:hint="Enter Description"
-                android:padding="16dp"
-                android:textColor="@color/dark_green" />
 
             <Button
-                android:id="@+id/updateButton"
+                android:id="@+id/saveButton"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginTop="20dp"
-                android:text="Update"
+                android:text="Post"
                 android:textSize="18sp"
                 app:cornerRadius="20dp" />
-
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </ScrollView>

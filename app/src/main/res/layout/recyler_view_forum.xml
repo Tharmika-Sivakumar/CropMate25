@@ -2,6 +2,7 @@
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/recCard"
@@ -14,46 +15,46 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <com.google.android.material.imageview.ShapeableImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:id="@+id/recImage"
-            android:src="@drawable/uploadphoto"
-            android:layout_marginStart="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
-            android:scaleType="centerCrop"
-            app:shapeAppearanceOverlay="@style/roundedImageViewRounded"/>
+        android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/recTitle"
-            android:layout_width="249dp"
-            android:layout_height="37dp"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="48dp"
-            android:layout_toEndOf="@id/recImage"
-            android:text="Title"
-            android:textColor="@color/dark_green"
-            android:textSize="20sp" />
-
-
-        <TextView
-            android:id="@+id/recName"
-            android:layout_width="230dp"
+            android:id="@+id/threadTitle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/recTitle"
-            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
             android:layout_marginStart="20dp"
-            android:layout_marginEnd="67dp"
-            android:layout_marginBottom="12dp"
-            android:layout_toEndOf="@id/recImage"
-            android:maxLines="1"
-            android:text="Name"
-            android:textColor="@color/dark_green"
-            android:textSize="14sp" />
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="20dp"
+            android:inputType="textMultiLine"
+            android:lineSpacingExtra="4dp"
+            android:text="feedback"
+            android:textColor="@color/black"
+            android:textSize="30dp"
+            tools:ignore="TextViewEdits" />
+
+        <TextView
+            android:id="@+id/whopost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/threadTitle"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="-72dp"
+            android:layout_marginEnd="21dp"
+            android:text="post by"
+            android:textColor="@color/black"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/whenpost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/threadTitle"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="17dp"
+            android:text="post time"
+            android:textColor="@color/black"
+            android:textSize="20dp" />
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

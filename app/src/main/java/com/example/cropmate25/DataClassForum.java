@@ -1,35 +1,78 @@
 package com.example.cropmate25;
 
 public class DataClassForum {
-    private String dataTitle;
-    private String dataDesc;
-    private String dataName;
-    private String dataImage;
-
+    private String title;
+    private String question;
+    private String image;
+    private String timeStamp;
+    private String userId;
+    private String userName;
     private String key;
+
     public String getKey() {
-        return key; }
+        return key;
+    }
 
-    public void setKey(String key) { this.key = key; }
-    public String getDataTitle() {
-        return dataTitle;
+    public void setKey(String key) {
+        this.key = key;
     }
-    public String getDataDesc() {
-        return dataDesc;
-    }
-    public String getDataName() {
-        return dataName;
-    }
-    public String getDataImage() {
-        return dataImage;
-    }
-    public DataClassForum(String dataTitle, String dataDesc,String dataName, String dataImage) {
-        this.dataTitle = dataTitle;
-        this.dataDesc = dataDesc;
-        this.dataName = dataName;
-        this.dataImage = dataImage;
-    }
-    public DataClassForum() {
 
+    public String getTitle() {
+        return title;
     }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(String question) {
+        this.question = question;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(String timeStamp) {
+        this.timeStamp = timeStamp;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public DataClassForum(String title, String question, String image, String timeStamp, String userId, String userName) {
+        this.title = title;
+        this.question = question;
+        this.image = image != null ? image : "";
+        this.timeStamp = timeStamp;
+        this.userName = userName;
+        this.userId = userId;
+    }
+
+    public DataClassForum() {}
 }

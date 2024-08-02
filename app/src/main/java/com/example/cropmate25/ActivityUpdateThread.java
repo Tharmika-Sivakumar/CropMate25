@@ -29,8 +29,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-public class UpdateActivityForum extends AppCompatActivity {
-
+public class ActivityUpdateThread extends AppCompatActivity {
+/*
     ImageView updateImage;
     Button updateButton;
     EditText updateDesc, updateTitle, updateName;
@@ -44,7 +44,7 @@ public class UpdateActivityForum extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_update_forum);
+        setContentView(R.layout.activity_thread_update_forum);
 
         updateButton = findViewById(R.id.updateButton);
         updateDesc = findViewById(R.id.updateDesc);
@@ -62,7 +62,7 @@ public class UpdateActivityForum extends AppCompatActivity {
                             uri = data.getData();
                             updateImage.setImageURI(uri);
                         } else {
-                            Toast.makeText(UpdateActivityForum.this, "No Image Selected", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ActivityUpdateThread.this, "No Image Selected", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -70,7 +70,7 @@ public class UpdateActivityForum extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null){
-            Glide.with(UpdateActivityForum.this).load(bundle.getString("Image")).into(updateImage);
+            Glide.with(ActivityUpdateThread.this).load(bundle.getString("Image")).into(updateImage);
             updateTitle.setText(bundle.getString("Title"));
             updateDesc.setText(bundle.getString("Description"));
             updateName.setText(bundle.getString("Name"));
@@ -93,7 +93,7 @@ public class UpdateActivityForum extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 saveData();
-                Intent intent = new Intent(UpdateActivityForum.this, MainActivity.class);
+                Intent intent = new Intent(ActivityUpdateThread.this, MainActivity.class);
                 startActivity(intent);
             }
         });
@@ -103,7 +103,7 @@ public class UpdateActivityForum extends AppCompatActivity {
         if (uri != null) {
             storageReference = FirebaseStorage.getInstance().getReference().child("Android Images").child(uri.getLastPathSegment());
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(UpdateActivityForum.this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(ActivityUpdateThread.this);
             builder.setCancelable(false);
             builder.setView(R.layout.progress_layout);
             AlertDialog dialog = builder.create();
@@ -123,7 +123,7 @@ public class UpdateActivityForum extends AppCompatActivity {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     dialog.dismiss();
-                    Toast.makeText(UpdateActivityForum.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityUpdateThread.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         } else {
@@ -137,7 +137,7 @@ public class UpdateActivityForum extends AppCompatActivity {
         desc = updateDesc.getText().toString().trim();
         name = updateName.getText().toString().trim();
 
-        DataClassForum dataClass = new DataClassForum(title, desc, name, imageUrl);
+        DataClassForum dataClass = new DataClassForum(title, desc, imageUrl);
 
         databaseReference.setValue(dataClass).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -147,15 +147,15 @@ public class UpdateActivityForum extends AppCompatActivity {
                         StorageReference reference = FirebaseStorage.getInstance().getReferenceFromUrl(oldImageURL);
                         reference.delete();
                     }
-                    Toast.makeText(UpdateActivityForum.this, "Updated", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityUpdateThread.this, "Updated", Toast.LENGTH_SHORT).show();
                     finish();
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(UpdateActivityForum.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityUpdateThread.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-    }
+    }*/
 }

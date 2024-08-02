@@ -30,7 +30,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:text="Upload Data"
+                android:text="Update Thread"
                 android:textAlignment="center"
                 android:textColor="@color/dark_green"
                 android:textSize="30sp" />
@@ -52,38 +52,38 @@
                 android:layout_marginTop="20dp"
                 android:background="@drawable/green_border"
                 android:gravity="start|center_vertical"
-                android:hint="Enter Title"
+                android:hint="Thread Title"
+                android:textColorHint="#131414"
+                android:textStyle="bold"
                 android:padding="16dp"
                 android:textColor="@color/dark_green" />
 
             <EditText
-                android:id="@+id/uploadName"
+                android:id="@+id/messagedata"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/green_border"
-                android:gravity="start|center_vertical"
-                android:hint="Enter Name"
-                android:padding="16dp"
-                android:textColor="@color/dark_green" />
+                android:layout_height="194dp"
+                android:layout_margin="15dp"
+                android:padding="10dp"
+                android:gravity="start|top"
+                android:background="@drawable/white_box"
+                android:hint="Submit your question"
+                android:inputType="textMultiLine"
+                android:minHeight="48dp"
+                android:overScrollMode="always"
+                android:scrollbars="vertical"
+                android:textColorHint="#131414"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textAlignment="viewStart"
+                />
 
-            <EditText
-                android:id="@+id/uploadDesc"
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/green_border"
-                android:gravity="start|center_vertical"
-                android:hint="Enter Description"
-                android:padding="16dp"
-                android:textColor="@color/dark_green" />
 
             <Button
                 android:id="@+id/saveButton"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginTop="20dp"
-                android:text="Save"
+                android:text="Update"
                 android:textSize="18sp"
                 app:cornerRadius="20dp" />
         </LinearLayout>

@@ -12,17 +12,16 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
@@ -33,15 +32,16 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity implements LocationListener {
 
     private static final Log log = LogFactory.getLog(MainActivity.class);
     private Button buttonLocation;
     private LocationManager locationManager;
+    private AlertDialog dialog;
 
-
-    private final String API_KEY = "24991040bc1c17696cc24c8b99268672";  // Replace with your OpenWeatherMap API key
+    private final String API_KEY = "24991040bc1c17696cc24c8b99268672";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +50,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
         buttonLocation = findViewById(R.id.button_location);
 
-        // Request location permissions if not granted
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setCancelable(false).setView(R.layout.progress_layout);
+        dialog = builder.create();
+
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{
@@ -63,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             public void onClick(View v) {
                 if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
                         == PackageManager.PERMISSION_GRANTED) {
+                    dialog.show();
                     getLocation();
                 } else {
                     ActivityCompat.requestPermissions(MainActivity.this, new String[]{
@@ -80,6 +84,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5, MainActivity.this);
         } catch (Exception e) {
             e.printStackTrace();
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
         }
     }
 
@@ -104,6 +111,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             }
         } catch (Exception e) {
             e.printStackTrace();
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
         }
     }
 
@@ -119,6 +129,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 e.printStackTrace();
+                runOnUiThread(() -> {
+                    if (dialog.isShowing()) {
+                        dialog.dismiss();
+                    }
+                    Toast.makeText(MainActivity.this, "Failed to fetch weather data", Toast.LENGTH_SHORT).show();
+                });
             }
 
             @Override
@@ -126,24 +142,24 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 if (response.isSuccessful()) {
                     final String responseData = response.body().string();
 
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                JSONObject json = new JSONObject(responseData);
-                                JSONObject main = json.getJSONObject("main");
-                                double temp = main.getDouble("temp");
-                                String weatherCondition = json.getJSONArray("weather").getJSONObject(0).getString("description");
-                                String weatherInfo = temp + "°C, " + weatherCondition;
+                    runOnUiThread(() -> {
+                        try {
+                            JSONObject json = new JSONObject(responseData);
+                            JSONObject main = json.getJSONObject("main");
+                            double temp = main.getDouble("temp");
+                            String weatherCondition = json.getJSONArray("weather").getJSONObject(0).getString("description");
+                            String weatherInfo = temp + "°C, " + weatherCondition;
 
-                                Intent intent = new Intent(MainActivity.this, HomeFragment.class); // Change to an Activity
-                                intent.putExtra("weatherInfo", weatherInfo);
-                                startActivity(intent);
-                                finish();
+                            Intent intent = new Intent(MainActivity.this, HomeFragment.class);
+                            intent.putExtra("weatherInfo", weatherInfo);
+                            startActivity(intent);
+                            finish();
 
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        if (dialog.isShowing()) {
+                            dialog.dismiss();
                         }
                     });
                 }
@@ -171,7 +187,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 100) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getLocation(); // Corrected method call
+                dialog.show();
+                getLocation();
             } else {
                 Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
             }

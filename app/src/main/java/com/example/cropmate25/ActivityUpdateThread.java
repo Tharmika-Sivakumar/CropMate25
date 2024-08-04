@@ -4,61 +4,70 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class ActivityUpdateThread extends AppCompatActivity {
-/*
-    ImageView updateImage;
-    Button updateButton;
-    EditText updateDesc, updateTitle, updateName;
-    String title, desc, price, name;
-    String imageUrl;
-    String key, oldImageURL;
-    Uri uri;
-    DatabaseReference databaseReference;
-    StorageReference storageReference;
+    private final String TAG = "ActivityUpdateThread";
+    private ImageView updateImage;
+    private Button updateButton;
+    private EditText updateQuestion, updateTitle;
+    private String imageUrl;
+    private Uri uri;
+    private FirebaseManager firebaseManager;
+    private FirebaseFirestore database;
+    private FirebaseStorage storage;
+
+    String documentId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_thread_update_forum);
 
-        updateButton = findViewById(R.id.updateButton);
-        updateDesc = findViewById(R.id.updateDesc);
-        updateImage = findViewById(R.id.updateImage);
-        updateName = findViewById(R.id.updateName);
-        updateTitle = findViewById(R.id.updateTitle);
+        firebaseManager = FirebaseManager.getInstance(TAG);
+        database = firebaseManager.getDatabase();
+        storage = firebaseManager.getStorage();
+
+        updateButton = findViewById(R.id.update);
+        updateQuestion = findViewById(R.id.messagedata);
+        updateImage = findViewById(R.id.uploadImage);
+        updateTitle = findViewById(R.id.uploadTitle);
+
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            documentId = bundle.getString("key");
+            Glide.with(ActivityUpdateThread.this).load(bundle.getString("Image")).into(updateImage);
+            updateTitle.setText(bundle.getString("Title"));
+            updateQuestion.setText(bundle.getString("Question"));
+        }
+        else {
+            Log.e(TAG, "No data passed in the intent");
+        }
 
         ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == Activity.RESULT_OK){
-                            Intent data = result.getData();
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data != null) {
                             uri = data.getData();
                             updateImage.setImageURI(uri);
                         } else {
@@ -68,94 +77,73 @@ public class ActivityUpdateThread extends AppCompatActivity {
                 }
         );
 
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null){
-            Glide.with(ActivityUpdateThread.this).load(bundle.getString("Image")).into(updateImage);
-            updateTitle.setText(bundle.getString("Title"));
-            updateDesc.setText(bundle.getString("Description"));
-            updateName.setText(bundle.getString("Name"));
-            key = bundle.getString("Key");
-            oldImageURL = bundle.getString("Image");
-        }
-
-        databaseReference = FirebaseDatabase.getInstance().getReference("Forum Images").child(key);
-
-        updateImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent photoPicker = new Intent(Intent.ACTION_PICK);
-                photoPicker.setType("image/*");
-                activityResultLauncher.launch(photoPicker);
-            }
+        updateImage.setOnClickListener(view -> {
+            Intent photoPicker = new Intent(Intent.ACTION_PICK);
+            photoPicker.setType("image/*");
+            activityResultLauncher.launch(photoPicker);
         });
 
-        updateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                saveData();
-                Intent intent = new Intent(ActivityUpdateThread.this, MainActivity.class);
-                startActivity(intent);
+        updateButton.setOnClickListener(view -> {
+            if (uri != null) {
+                updateImageAndUpdateData();
+            } else {
+                updateData();
             }
+            Intent intent = new Intent(ActivityUpdateThread.this, CommunityForum.class);
+            startActivity(intent);
+            finish();
         });
     }
 
-    public void saveData() {
-        if (uri != null) {
-            storageReference = FirebaseStorage.getInstance().getReference().child("Android Images").child(uri.getLastPathSegment());
+    private void updateImageAndUpdateData() {
+        StorageReference storageReference = this.storage.getReference().child("Thread Images").child(Objects.requireNonNull(uri.getLastPathSegment()));
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(ActivityUpdateThread.this);
-            builder.setCancelable(false);
-            builder.setView(R.layout.progress_layout);
-            AlertDialog dialog = builder.create();
-            dialog.show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(ActivityUpdateThread.this);
+        builder.setCancelable(false);
+        builder.setView(R.layout.progress_layout);
+        AlertDialog dialog = builder.create();
+        dialog.show();
 
-            storageReference.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
-                    while (!uriTask.isComplete());
-                    Uri urlImage = uriTask.getResult();
-                    imageUrl = urlImage.toString();
+        storageReference.putFile(uri).addOnSuccessListener(taskSnapshot ->
+                storageReference.getDownloadUrl().addOnSuccessListener(downloadUri -> {
+                    imageUrl = downloadUri.toString();
+                    dialog.dismiss();
                     updateData();
+                }).addOnFailureListener(e -> {
                     dialog.dismiss();
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    dialog.dismiss();
-                    Toast.makeText(ActivityUpdateThread.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
-        } else {
-            imageUrl = oldImageURL;
-            updateData();
-        }
+                    Log.e(TAG, "Failed to get download URL: " + e.getMessage());
+                    Toast.makeText(ActivityUpdateThread.this, "Failed to get URL", Toast.LENGTH_SHORT).show();
+                })
+        ).addOnFailureListener(e -> {
+            dialog.dismiss();
+            Log.e(TAG, "Failed to upload image: " + e.getMessage());
+            Toast.makeText(ActivityUpdateThread.this, "Failed to upload image", Toast.LENGTH_SHORT).show();
+        });
     }
 
-    public void updateData() {
-        title = updateTitle.getText().toString().trim();
-        desc = updateDesc.getText().toString().trim();
-        name = updateName.getText().toString().trim();
+    private void updateData() {
+        String title = updateTitle.getText().toString().trim();
+        String question = updateQuestion.getText().toString().trim();
 
-        DataClassForum dataClass = new DataClassForum(title, desc, imageUrl);
+        if (title.isEmpty() || question.isEmpty() || (imageUrl == null && uri != null)) {
+            Toast.makeText(this, "Please fill all fields and upload an image if needed", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        databaseReference.setValue(dataClass).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()){
-                    if (uri != null) {
-                        StorageReference reference = FirebaseStorage.getInstance().getReferenceFromUrl(oldImageURL);
-                        reference.delete();
-                    }
-                    Toast.makeText(ActivityUpdateThread.this, "Updated", Toast.LENGTH_SHORT).show();
+        Map<String, Object> data = new HashMap<>();
+        data.put("title", title);
+        data.put("question", question);
+        data.put("imageUrl", imageUrl != null ? imageUrl : null);
+        data.put("postedOn", DateTime.getTimeStamp());
+
+        database.collection("Threads").document(documentId).update(data)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "Thread data updated successfully.");
                     finish();
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(ActivityUpdateThread.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }*/
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Failed to update thread data: " + e.getMessage());
+                    Toast.makeText(ActivityUpdateThread.this, "Failed to update thread data", Toast.LENGTH_SHORT).show();
+                });
+    }
 }

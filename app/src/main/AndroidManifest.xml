@@ -20,7 +20,7 @@
             android:name=".forumDetails"
             android:exported="false" />
         <activity
-            android:name=".updateActivityForum"
+            android:name=".ActivityUpdateThread"
             android:exported="false" />
         <activity
             android:name=".ActivityCreateThread"

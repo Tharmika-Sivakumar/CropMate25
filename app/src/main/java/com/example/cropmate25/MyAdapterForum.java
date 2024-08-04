@@ -67,6 +67,7 @@ public class MyAdapterForum extends RecyclerView.Adapter<MyViewHolderForum> {
                 intent.putExtra("Name", dataList.get(holder.getAdapterPosition()).getUserName());
                 intent.putExtra("ID", item.getUserId());
                 intent.putExtra("whenPost", dataList.get(holder.getAdapterPosition()).getTimeStamp());
+                intent.putExtra("key", dataList.get(holder.getAdapterPosition()).getKey());
                 context.startActivity(intent);
             }
         });

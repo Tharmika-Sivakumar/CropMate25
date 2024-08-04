@@ -54,10 +54,14 @@ public class ActivityUpdateThread extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             documentId = bundle.getString("key");
-
-            if(bundle.getString("Image") != null) {
-                Glide.with(ActivityUpdateThread.this).load(bundle.getString("Image")).into(updateImage);
+            String oldImageUrl = bundle.getString("Image");
+            if(oldImageUrl != null && !oldImageUrl.isEmpty()) {
+                Glide.with(ActivityUpdateThread.this).load(oldImageUrl).into(updateImage);
             }
+            else{
+                Glide.with(ActivityUpdateThread.this).load(R.drawable.uploadphoto).into(updateImage);
+            }
+
             updateTitle.setText(bundle.getString("Title"));
             updateQuestion.setText(bundle.getString("Question"));
         }

@@ -54,7 +54,10 @@ public class ActivityUpdateThread extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             documentId = bundle.getString("key");
-            Glide.with(ActivityUpdateThread.this).load(bundle.getString("Image")).into(updateImage);
+
+            if(bundle.getString("Image") != null) {
+                Glide.with(ActivityUpdateThread.this).load(bundle.getString("Image")).into(updateImage);
+            }
             updateTitle.setText(bundle.getString("Title"));
             updateQuestion.setText(bundle.getString("Question"));
         }
@@ -86,12 +89,11 @@ public class ActivityUpdateThread extends AppCompatActivity {
         updateButton.setOnClickListener(view -> {
             if (uri != null) {
                 updateImageAndUpdateData();
-            } else {
+            }
+            else {
                 updateData();
             }
-            Intent intent = new Intent(ActivityUpdateThread.this, CommunityForum.class);
-            startActivity(intent);
-            finish();
+
         });
     }
 
@@ -139,6 +141,8 @@ public class ActivityUpdateThread extends AppCompatActivity {
         database.collection("Threads").document(documentId).update(data)
                 .addOnSuccessListener(aVoid -> {
                     Log.d(TAG, "Thread data updated successfully.");
+                    Intent intent = new Intent(ActivityUpdateThread.this, CommunityForum.class);
+                    startActivity(intent);
                     finish();
                 })
                 .addOnFailureListener(e -> {

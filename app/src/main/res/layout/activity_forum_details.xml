@@ -6,65 +6,121 @@
     android:layout_height="match_parent"
     android:padding="16dp">
 
-    <!-- Title Container -->
-    <RelativeLayout
-        android:id="@+id/titleContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/background_white">
 
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginEnd="25dp"/>
-    </RelativeLayout>
-
-    <!-- Conditional ImageView Container -->
     <RelativeLayout
         android:id="@+id/imageContainer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/titleContainer"
-        android:layout_marginTop="16dp"
+        android:layout_height="214dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
         android:background="@drawable/background_yellow_light">
 
-        <ImageView
-            android:id="@+id/imageShow"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="5dp"
-            android:visibility="gone"/>
-
         <TextView
-            android:id="@+id/questionShow"
-            android:layout_width="match_parent"
+            android:id="@+id/title"
+            android:layout_width="271dp"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="33dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginEnd="37dp"/>
-    </RelativeLayout>
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="15dp"
+            android:text="Title"
+            android:textSize="24dp"
+            android:textStyle="bold">
 
+        </TextView>
+
+        <TextView
+            android:id="@+id/questionShow"
+            android:layout_width="226dp"
+            android:layout_height="130dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="22dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginEnd="122dp"
+            android:text="Question"
+            android:textSize="17dp" />
+
+        <ImageView
+            android:id="@+id/imageShow"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="287dp"
+            android:layout_marginTop="115dp"
+            android:layout_marginEnd="6dp"
+            app:srcCompat="@drawable/no_image" />
+
+        <TextView
+            android:id="@+id/when"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="23dp"
+            android:layout_marginBottom="10dp"
+            android:textSize="15dp"
+            android:textStyle="bold"
+            android:text="When Post" />
+
+        <TextView
+            android:id="@+id/who"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="190dp"
+            android:text="Who Post"
+            android:textStyle="bold"
+            android:textSize="12dp" />
+
+    </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/RecyclerView_chat"
-        android:layout_width="match_parent"
+        android:layout_width="385dp"
+        android:layout_height="386dp"
+        android:layout_below="@+id/textView6"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="07dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="07dp" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="216dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/imageContainer"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"/>
+        android:layout_below="@+id/imageContainer"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="07dp"
+        android:layout_marginEnd="188dp"
+        android:text="Share Your Thoughs"
+        android:textSize="17dp"
+        android:textStyle="bold|italic" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/sendMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="10dp"
+        android:backgroundTint="@color/dark_green"
+        app:tint = "@color/white"
+        android:src="@drawable/baseline_add_24"
+        android:contentDescription="TODO" />
+
 </RelativeLayout>

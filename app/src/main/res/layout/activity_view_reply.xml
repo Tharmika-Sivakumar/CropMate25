@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+
+    <RelativeLayout
+        android:id="@+id/imageContainer"
+        android:layout_width="380dp"
+        android:layout_height="123dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/background_yellow_light">
+
+
+        <TextView
+            android:id="@+id/questionShow"
+            android:layout_width="319dp"
+            android:layout_height="48dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="22dp"
+            android:layout_marginTop="34dp"
+            android:layout_marginEnd="24dp"
+            android:text="Question"
+            android:textSize="17dp" />
+
+        <TextView
+            android:id="@+id/when"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="23dp"
+            android:layout_marginBottom="10dp"
+            android:text="When Post"
+            android:textSize="15dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/who"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="100dp"
+            android:text="Who Post"
+            android:textSize="12dp"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/RecyclerView_reply"
+        android:layout_width="385dp"
+        android:layout_height="386dp"
+        android:layout_below="@+id/textView6"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="07dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="07dp" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="271dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageContainer"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="07dp"
+        android:layout_marginEnd="119dp"
+        android:text="Share Your Thoughs as Reply"
+        android:textSize="17dp"
+        android:textStyle="bold|italic" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/sendMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="10dp"
+        android:backgroundTint="@color/dark_green"
+        app:tint = "@color/white"
+        android:src="@drawable/baseline_add_24"
+        android:contentDescription="TODO" />
+
+</RelativeLayout>

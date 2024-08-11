@@ -47,7 +47,7 @@ public class forumDetails extends AppCompatActivity {
     private FirebaseManager firebaseManager;
     private RecyclerView recyclerViewMessages;
     private forumDetailsAdapter adapter;
-    private List<ForumChat> chatList = new ArrayList<>();
+    private List<ForumChat> chatList;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -159,7 +159,6 @@ public class forumDetails extends AppCompatActivity {
 
         cancelButton.setOnClickListener(view -> dialog.dismiss());
 
-        // Customize dialog appearance
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         }
